@@ -40,7 +40,7 @@ Follow these steps to get the project running on your local machine.
 
 ```bash
 git clone https://github.com/Saikumar1801/Growthzi.git
-cd growthzi-backend
+cd Growthzi
 ```
 
 ### 2. Set Up a Virtual Environment
