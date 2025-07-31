@@ -1,0 +1,7 @@
+ 
+Flask
+pymongo[srv]
+python-dotenv
+Werkzeug
+PyJWT
+openai
