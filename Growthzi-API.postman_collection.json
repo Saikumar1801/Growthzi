@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "c1a2b3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
+		"name": "Growthzi API",
+		"description": "API collection for the Growthzi AI Website Builder backend. This collection covers authentication, admin management, and website management.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"description": "Endpoints for user authentication.",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"editor@growthzi.com\",\n    \"password\": \"strongpassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Registers a new user. New users are automatically assigned the 'Editor' role."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"editor@growthzi.com\",\n    \"password\": \"strongpassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in a user and returns a JWT token. Copy this token and set it as the `jwt_token` environment variable."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Management",
+			"description": "Endpoints for managing roles and users. Requires Admin role.",
+			"item": [
+				{
+					"name": "Get All Roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/roles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"roles"
+							]
+						},
+						"description": "Retrieves a list of all available roles in the system. Requires `roles:manage` permission (Admin only)."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Role to User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role_name\": \"Viewer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/{{user_id}}/assign-role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"{{user_id}}",
+								"assign-role"
+							]
+						},
+						"description": "Assigns a different role to a specified user. Requires `users:manage` permission (Admin only). Replace `{{user_id}}` with a valid user's ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Website Management",
+			"description": "Endpoints for creating and managing websites.",
+			"item": [
+				{
+					"name": "Generate AI Website",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"business_type\": \"A small artisanal coffee shop\",\n    \"industry\": \"Food and Beverage\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/websites/generate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"websites",
+								"generate"
+							]
+						},
+						"description": "Generates website content using AI and creates a new website document. Requires `websites:create` permission (Admin or Editor)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Websites",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/websites/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"websites",
+								""
+							]
+						},
+						"description": "Retrieves a list of websites. Admins see all websites. Editors see only their own."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Website by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/websites/{{website_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"websites",
+								"{{website_id}}"
+							]
+						},
+						"description": "Retrieves the details of a single website. Replace `{{website_id}}` with a valid website's ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Website",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": {\n        \"title\": \"QuantumLeap Analytics - Updated\",\n        \"hero\": {\n            \"headline\": \"Unlock Your Data's True Potential Today\",\n            \"subheading\": \"AI-driven insights for forward-thinking businesses.\",\n            \"cta_button_text\": \"Request a Demo Now\"\n        },\n        \"about\": {\n            \"title\": \"About Our Company\",\n            \"text\": \"QuantumLeap Analytics was founded with the vision to democratize data science...\"\n        },\n        \"services\": [\n            {\n                \"name\": \"Predictive Modeling\",\n                \"description\": \"Leverage machine learning to forecast future trends.\"\n            },\n            {\n                \"name\": \"Data Visualization\",\n                \"description\": \"Turn complex data sets into beautiful, intuitive dashboards.\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/websites/{{website_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"websites",
+								"{{website_id}}"
+							]
+						},
+						"description": "Updates the `content` of a website. Editors can only update their own sites. Admins can update any site. Replace `{{website_id}}` with a valid website's ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Website",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/websites/{{website_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"websites",
+								"{{website_id}}"
+							]
+						},
+						"description": "Deletes a website. Editors can only delete their own sites. Admins can delete any site. Replace `{{website_id}}` with a valid website's ID."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:5000"
+		},
+		{
+			"key": "jwt_token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "website_id",
+			"value": ""
+		}
+	]
+}
