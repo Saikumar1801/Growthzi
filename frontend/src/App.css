@@ -1,0 +1,285 @@
+/* Global Styles */
+:root {
+  --background-dark: #12181d;
+  --background-light: #1B252C;
+  --primary-text: #EAECEF;
+  --secondary-text: #a8b2c0;
+  --accent-color: #3d8bfd;
+  --accent-hover: #529aff;
+  --border-color: #343a40;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-dark);
+  color: var(--primary-text);
+}
+
+/* Layout and Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* --- Components --- */
+
+/* Navbar */
+.navbar {
+  background-color: var(--background-light);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-text);
+  text-decoration: none;
+}
+.navbar-links a {
+  color: var(--secondary-text);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  transition: color 0.2s ease-in-out;
+}
+.navbar-links a:hover, .navbar-links a.active {
+  color: var(--primary-text);
+}
+.logout-button {
+  background: none;
+  border: 1px solid var(--secondary-text);
+  color: var(--secondary-text);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.logout-button:hover {
+  background-color: var(--secondary-text);
+  color: var(--background-dark);
+}
+
+/* Forms */
+.form-container {
+  max-width: 450px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--primary-text);
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-text);
+  font-size: 0.9rem;
+}
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--primary-text);
+  font-size: 1rem;
+}
+.form-group input:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.form-link {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--secondary-text);
+}
+.form-link a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+  text-align: center;
+}
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+.btn-block {
+  width: 100%;
+  padding: 1rem;
+}
+.btn-secondary {
+  background-color: var(--background-light);
+  color: var(--primary-text);
+  border: 1px solid var(--border-color);
+}
+.btn-danger {
+  background-color: var(--error-color);
+  color: #fff;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Website Card */
+.website-card {
+  background-color: var(--background-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.website-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+.website-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--primary-text);
+}
+.website-card p {
+  color: var(--secondary-text);
+  margin-bottom: 1.5rem;
+}
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Loader */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 4rem;
+}
+.loader {
+  border: 5px solid var(--background-light);
+  border-top: 5px solid var(--accent-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: var(--background-light);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Editor Specific Styles */
+.editor-section {
+  background-color: var(--background-light);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.editor-section h3 {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+.service-item {
+  border-left: 3px solid var(--accent-color);
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Not Found Page */
+.not-found-container {
+  text-align: center;
+  margin-top: 5rem;
+}
+.not-found-container h1 {
+  font-size: 6rem;
+  margin-bottom: 0;
+  color: var(--accent-color);
+}
+.not-found-container p {
+  font-size: 1.5rem;
+  color: var(--secondary-text);
+} 
