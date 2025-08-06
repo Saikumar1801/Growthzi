@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from flask import current_app, g
-import certifi # <-- Import certifi
+import certifi # <-- MUST BE PRESENT
 
 _mongo_client = None
 
@@ -15,12 +15,10 @@ def get_db_client():
         if not mongo_uri:
             raise ValueError("MONGO_URI is not set in the application configuration.")
         
-        # --- FIX: Explicitly provide the SSL certificate authority file ---
-        # This tells PyMongo to use the certificates bundled with the 'certifi' package,
-        # resolving SSL handshake errors in many deployment environments like On-Render.
+        # --- THIS IS THE CRITICAL FIX ---
         ca = certifi.where()
         _mongo_client = MongoClient(mongo_uri, tlsCAFile=ca)
-        # -----------------------------------------------------------------
+        # --------------------------------
 
     return _mongo_client
 
