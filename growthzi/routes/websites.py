@@ -35,7 +35,7 @@ def generate_website():
     
     try:
         # Initialize the Gemini model
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         prompt = f"""
         Generate website content for a company.
