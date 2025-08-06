@@ -52,6 +52,7 @@ def create_app():
     from .routes.websites import websites_bp
     from .routes.preview import preview_bp
 
+    # Use consistent trailing slashes to prevent redirects
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(admin_bp, url_prefix='/api/admin/')
     app.register_blueprint(websites_bp, url_prefix='/api/websites/')
