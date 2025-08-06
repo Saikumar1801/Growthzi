@@ -1,6 +1,4 @@
- 
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import * as authApi from '../api/auth';
 import Loader from '../components/Loader';
 
@@ -15,16 +13,14 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const decoded = jwtDecode(token);
-                    if (decoded.exp * 1000 > Date.now()) {
-                        const role = await authApi.fetchUserRole();
-                        setUser({ id: decoded.user_id, role });
-                    } else {
-                        authApi.logout(); // Token expired
-                    }
+                    // --- CHANGE: Use the new /me endpoint for reliability ---
+                    const response = await authApi.getMe();
+                    // The backend now tells us the role directly.
+                    setUser({ id: response.data.id, role: response.data.role });
+                    // ----------------------------------------------------
                 } catch (error) {
-                    console.error("Token validation failed", error);
-                    authApi.logout();
+                    console.error("Token validation failed or user not found", error);
+                    authApi.logout(); // Token is invalid, log them out.
                 }
             }
             setLoading(false);
@@ -33,15 +29,16 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const data = await authApi.login(email, password);
-        const decoded = jwtDecode(data.token);
-        const role = await authApi.fetchUserRole();
-        setUser({ id: decoded.user_id, role });
+        await authApi.login(email, password); // This sets the token in localStorage
+        // --- CHANGE: Use the new /me endpoint after login ---
+        const response = await authApi.getMe();
+        setUser({ id: response.data.id, role: response.data.role });
+        // -------------------------------------------------
     };
 
     const signup = async (email, password) => {
         await authApi.signup(email, password);
-        // After signup, log the user in automatically
+        // After signup, automatically log the user in to get their token and profile.
         await login(email, password);
     };
 
@@ -50,7 +47,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
     
-    // While the context is initializing, show a loader
     if (loading) {
         return <Loader />;
     }

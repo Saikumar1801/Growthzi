@@ -1,16 +1,17 @@
-import axios from 'axios';
+import apiClient from './axiosConfig';
 
 const API_URL = '/api/admin/';
 
-const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
+// --- NEW FUNCTION ---
+export const getAllUsers = () => {
+    return apiClient.get(`${API_URL}users`);
 };
+// --------------------
 
 export const getAllRoles = () => {
-    return axios.get(`${API_URL}/roles`, { headers: getAuthHeaders() });
+    return apiClient.get(`${API_URL}roles`);
 };
 
 export const assignRoleToUser = (userId, roleName) => {
-    return axios.put(`${API_URL}/users/${userId}/assign-role`, { role_name: roleName }, { headers: getAuthHeaders() });
-}; 
+    return apiClient.put(`${API_URL}users/${userId}/assign-role`, { role_name: roleName });
+};

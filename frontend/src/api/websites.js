@@ -1,29 +1,28 @@
- 
-import axios from 'axios';
+import apiClient from './axiosConfig'; // Import the centralized client
 
-const API_URL = '/api/websites/';
+const API_URL = '/api/websites/'; // The base path for all website-related endpoints
 
-const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
+// Calls the AI to generate content and create a new website document.
 export const generateWebsite = (business_type, industry) => {
-    return axios.post(`${API_URL}/generate`, { business_type, industry }, { headers: getAuthHeaders() });
+    return apiClient.post(`${API_URL}generate`, { business_type, industry });
 };
 
+// Retrieves a list of websites (Admins see all, others see their own).
 export const getWebsites = () => {
-    return axios.get(API_URL, { headers: getAuthHeaders() });
+    return apiClient.get(API_URL);
 };
 
+// Retrieves the data for a single website by its ID.
 export const getWebsiteById = (id) => {
-    return axios.get(`${API_URL}/${id}`, { headers: getAuthHeaders() });
+    return apiClient.get(`${API_URL}${id}`);
 };
 
+// Updates the content of a specific website.
 export const updateWebsite = (id, content) => {
-    return axios.put(`${API_URL}/${id}`, { content }, { headers: getAuthHeaders() });
+    return apiClient.put(`${API_URL}${id}`, { content });
 };
 
+// Deletes a specific website.
 export const deleteWebsite = (id) => {
-    return axios.delete(`${API_URL}/${id}`, { headers: getAuthHeaders() });
+    return apiClient.delete(`${API_URL}${id}`);
 };
