@@ -1,12 +1,13 @@
 from flask import Flask
-from bson import ObjectId
+from flask_cors import CORS
 from .config import Config
-from .db import init_db, get_db
+from . import db  # Import the db module
 
 def seed_database():
     """Seeds the database with default roles if they don't exist."""
-    db = get_db()
-    if db.roles.count_documents({}) == 0:
+    # Use the get_db() function to ensure we have a valid database handle
+    database = db.get_db()
+    if database.roles.count_documents({}) == 0:
         print("Seeding database with default roles...")
         roles = [
             {
@@ -27,7 +28,7 @@ def seed_database():
                 "permissions": ["websites:read_all", "websites:read_own"]
             }
         ]
-        db.roles.insert_many(roles)
+        database.roles.insert_many(roles)
         print("Default roles seeded.")
 
 def create_app():
@@ -35,9 +36,14 @@ def create_app():
     app = Flask(__name__, static_folder='../static', template_folder='../templates')
     app.config.from_object(Config)
 
-    # Initialize Database
+    # Initialize CORS for cross-origin requests from the frontend
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+    # Initialize and register database functions with the app
+    db.init_app(app)
+
+    # The app context is needed for database operations like seeding
     with app.app_context():
-        init_db(app)
         seed_database()
 
     # Import and register blueprints
@@ -47,8 +53,8 @@ def create_app():
     from .routes.preview import preview_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(admin_bp, url_prefix='/api/admin')
-    app.register_blueprint(websites_bp, url_prefix='/api/websites')
+    app.register_blueprint(admin_bp, url_prefix='/api/admin/')
+    app.register_blueprint(websites_bp, url_prefix='/api/websites/')
     app.register_blueprint(preview_bp, url_prefix='/preview')
 
     return app
