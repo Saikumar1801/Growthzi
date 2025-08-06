@@ -3,14 +3,14 @@ import datetime
 from flask import Blueprint, request, jsonify, current_app, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
-from ..db import get_db  # Correctly import the get_db function
+from ..db import get_db
 from ..utils.decorators import permission_required
 
 auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
-    database = get_db()  # Get the database instance for this request
+    database = get_db()
     data = request.get_json()
 
     if not data or not data.get('email') or not data.get('password'):
@@ -27,7 +27,6 @@ def signup():
         return jsonify({"error": "Default 'Viewer' role not found in the system."}), 500
 
     hashed_password = generate_password_hash(password)
-
     user_id = database.users.insert_one({
         "email": email,
         "password": hashed_password,
@@ -37,10 +36,9 @@ def signup():
 
     return jsonify({"message": "User created successfully", "user_id": str(user_id)}), 201
 
-
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    database = get_db()  # Get the database instance for this request
+    database = get_db()
     data = request.get_json()
 
     if not data or not data.get('email') or not data.get('password'):
@@ -61,13 +59,9 @@ def login():
 
     return jsonify({"message": "Login successful", "token": token})
 
-
 @auth_bp.route('/me', methods=['GET'])
 @permission_required('websites:read_own')
 def get_current_user():
-    """
-    Returns essential info for the currently logged-in user, including their role.
-    """
     if not g.get('current_user') or not g.get('current_user_role'):
         return jsonify({"error": "User context not found"}), 404
     
