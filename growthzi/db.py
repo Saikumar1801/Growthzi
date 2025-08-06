@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from flask import g, current_app
+from flask import current_app, g
 import certifi
 import ssl
 
@@ -11,12 +11,16 @@ def get_db():
     if 'db_client' not in g:
         # This code will only run once per request.
         ca = certifi.where()
+        
+        # --- THE FIX: Correct the parameter name to tls_version ---
         g.db_client = MongoClient(
             current_app.config['MONGO_URI'],
             tls=True,
             tlsCAFile=ca,
-            tlsVersion=ssl.PROTOCOL_TLSv1_2
+            tls_version=ssl.PROTOCOL_TLSv1_2 # <-- Corrected from tlsVersion
         )
+        # --------------------------------------------------------
+        
         g.db = g.db_client.get_database()
     return g.db
 
