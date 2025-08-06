@@ -5,3 +5,5 @@ python-dotenv
 Werkzeug
 PyJWT
 openai
+gunicorn 
+Flask-CORS 
