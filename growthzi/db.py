@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from flask import current_app, g
 import certifi
-import ssl
 
 def get_db():
     """
@@ -9,12 +8,17 @@ def get_db():
     If a connection is already established for this request, returns it.
     """
     if 'db_client' not in g:
-        # Connect with TLS and CA certificate only
+        # Get the path to the trusted certificate authorities from certifi.
+        ca = certifi.where()
+        
+        # Connect using the URI and the certifi CA file.
+        # This is the most common and robust configuration for cloud deployments.
         g.db_client = MongoClient(
             current_app.config['MONGO_URI'],
             tls=True,
-            tlsCAFile=certifi.where()
+            tlsCAFile=ca
         )
+        
         g.db = g.db_client.get_database()
     return g.db
 
@@ -27,5 +31,3 @@ def close_db(e=None):
 def init_app(app):
     """Register database functions with the Flask app."""
     app.teardown_appcontext(close_db)
-
-
