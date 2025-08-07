@@ -1,6 +1,6 @@
 certifi 
 Flask
-pymongo[srv]
+pymongo
 python-dotenv
 Werkzeug
 PyJWT
@@ -8,3 +8,4 @@ openai
 gunicorn 
 dnspython
 Flask-CORS 
+
