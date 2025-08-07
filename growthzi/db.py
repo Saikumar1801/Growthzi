@@ -4,13 +4,16 @@ import certifi
 import ssl
 
 def get_db():
+    """
+    Connects to the database for the current request.
+    If a connection is already established for this request, returns it.
+    """
     if 'db_client' not in g:
-        ca = certifi.where()
+        # Connect with TLS and CA certificate only
         g.db_client = MongoClient(
             current_app.config['MONGO_URI'],
             tls=True,
-            tlsCAFile=ca,
-            tlsVersion=ssl.TLSVersion.TLSv1_2  # Corrected parameter
+            tlsCAFile=certifi.where()
         )
         g.db = g.db_client.get_database()
     return g.db
@@ -24,4 +27,5 @@ def close_db(e=None):
 def init_app(app):
     """Register database functions with the Flask app."""
     app.teardown_appcontext(close_db)
+
 
