@@ -6,4 +6,5 @@ Werkzeug
 PyJWT
 openai
 gunicorn 
+dnspython
 Flask-CORS 
