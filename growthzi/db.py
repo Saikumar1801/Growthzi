@@ -1,35 +1,23 @@
 from pymongo import MongoClient
-from flask import current_app, g
-import certifi
-import ssl
+from flask import g
+
+db = None
+
+def init_db(app):
+    """Initializes the database connection."""
+    global db
+    if db is None:
+        client = MongoClient(app.config['MONGO_URI'])
+        # The 'g' object is a special Flask object that is unique for each request.
+        # We store the database connection here to be accessed throughout the request.
+        # For simplicity in this project, we'll connect once and reuse the client.
+        # The database name is extracted from the URI.
+        db_name = app.config['MONGO_URI'].split('/')[-1].split('?')[0]
+        db = client[db_name]
+    return db
 
 def get_db():
-    """
-    Connects to the database for the current request.
-    If a connection is already established for this request, returns it.
-    """
-    if 'db_client' not in g:
-        # This code will only run once per request.
-        ca = certifi.where()
-        
-        # --- THE FIX: Correct the parameter name to tls_version ---
-        g.db_client = MongoClient(
-            current_app.config['MONGO_URI'],
-            tls=True,
-            tlsCAFile=ca,
-            tls_version=ssl.PROTOCOL_TLSv1_2 # <-- Corrected from tlsVersion
-        )
-        # --------------------------------------------------------
-        
-        g.db = g.db_client.get_database()
-    return g.db
-
-def close_db(e=None):
-    """Closes the database connection at the end of the request."""
-    client = g.pop('db_client', None)
-    if client is not None:
-        client.close()
-
-def init_app(app):
-    """Register database functions with the Flask app."""
-    app.teardown_appcontext(close_db)
+    """Returns the database instance."""
+    if db is None:
+        raise Exception("Database not initialized. Call init_db() first.")
+    return db 

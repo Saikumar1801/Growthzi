@@ -3,7 +3,7 @@ import os
 import json
 from flask import Blueprint, request, jsonify, g
 from bson import ObjectId
-import google.generativeai as genai # Import Google's library
+import google.generativeai as genai
 from ..db import get_db
 from ..utils.decorators import permission_required
 
@@ -11,7 +11,12 @@ websites_bp = Blueprint('websites_bp', __name__)
 
 # --- Configure Google Gemini API ---
 # The API key is loaded from config, which reads from .env
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+# A check is added to prevent crashes if the key is missing.
+try:
+    genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+except Exception as e:
+    print(f"Warning: Google Gemini API could not be configured. Check GOOGLE_API_KEY. Error: {e}")
+
 
 # Helper to serialize BSON ObjectId to string
 def serialize_website(doc):
@@ -19,10 +24,10 @@ def serialize_website(doc):
     if doc.get('owner_id'): doc['owner_id'] = str(doc['owner_id'])
     return doc
 
-# --- AI Content Generation (with Gemini) ---
 
+# --- AI Content Generation (with Gemini) ---
 @websites_bp.route('/generate', methods=['POST'])
-@permission_required('websites:create')
+@permission_required('websites:create') # Only Admin and Editor can access
 def generate_website():
     db = get_db()
     data = request.get_json()
@@ -34,7 +39,6 @@ def generate_website():
     industry = data.get('industry')
     
     try:
-        # Initialize the Gemini model
         model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         prompt = f"""
@@ -64,7 +68,6 @@ def generate_website():
         """
         
         response = model.generate_content(prompt)
-        # Parse the text response into a JSON object
         generated_content = json.loads(response.text)
 
     except json.JSONDecodeError:
@@ -72,7 +75,7 @@ def generate_website():
         return jsonify({"error": "Failed to parse content from AI service. The response was not valid JSON."}), 500
     except Exception as e:
         print(f"Google Gemini API Error: {e}")
-        return jsonify({"error": "Failed to generate content from AI service."}), 500
+        return jsonify({"error": "Failed to generate content from AI service. Check your API key and permissions."}), 500
 
     # Store in Database
     website_doc = {
@@ -82,27 +85,27 @@ def generate_website():
         "content": generated_content
     }
     
-    result = db.websites.insert_one(website_doc)
+    db.websites.insert_one(website_doc)
     
     return jsonify({
         "message": "Website generated and created successfully", 
         "website": serialize_website(website_doc)
     }), 201
 
+
 # --- Standard CRUD Operations ---
 
 @websites_bp.route('/', methods=['GET'])
 @permission_required('websites:read_all', 'websites:read_own')
 def get_websites():
+    """
+    Returns a list of all websites. The permission decorator ensures
+    only authenticated users (Viewer, Editor, Admin) can access this.
+    """
     db = get_db()
-    user_role = g.current_user_role['name']
-    user_id = g.current_user['_id']
     
-    query = {}
-    if user_role == 'Editor':
-        query = {"owner_id": user_id}
-
-    websites_cursor = db.websites.find(query)
+    # The query is empty ({}) to fetch ALL documents from the collection.
+    websites_cursor = db.websites.find({})
     websites_list = [serialize_website(doc) for doc in websites_cursor]
     
     return jsonify(websites_list), 200
@@ -110,6 +113,9 @@ def get_websites():
 @websites_bp.route('/<website_id>', methods=['GET'])
 @permission_required('websites:read_all', 'websites:read_own')
 def get_website_by_id(website_id):
+    """
+    Returns a single website by its ID. Accessible by any authenticated user.
+    """
     db = get_db()
     try:
         website = db.websites.find_one({"_id": ObjectId(website_id)})
@@ -122,8 +128,13 @@ def get_website_by_id(website_id):
 @websites_bp.route('/<website_id>', methods=['PUT'])
 @permission_required('websites:edit_all', 'websites:edit_own')
 def update_website(website_id):
+    """
+    Updates a website. Admins can update any site.
+    Editors can only update sites they own.
+    """
     db = get_db()
     data = request.get_json()
+
     if 'content' not in data:
         return jsonify({"error": "Request body must contain 'content' field"}), 400
 
@@ -132,8 +143,9 @@ def update_website(website_id):
         if not website_to_update:
             return jsonify({"error": "Website not found"}), 404
         
+        # Check permissions
         user_role = g.current_user_role['name']
-        is_owner = str(website_to_update['owner_id']) == str(g.current_user['_id'])
+        is_owner = str(website_to_update.get('owner_id')) == str(g.current_user['_id'])
         
         if user_role == 'Editor' and not is_owner:
             return jsonify({"error": "Forbidden: You can only edit your own websites"}), 403
@@ -150,14 +162,19 @@ def update_website(website_id):
 @websites_bp.route('/<website_id>', methods=['DELETE'])
 @permission_required('websites:delete_all', 'websites:delete_own')
 def delete_website(website_id):
+    """
+    Deletes a website. Admins can delete any site.
+    Editors can only delete sites they own.
+    """
     db = get_db()
     try:
         website_to_delete = db.websites.find_one({"_id": ObjectId(website_id)})
         if not website_to_delete:
             return jsonify({"error": "Website not found"}), 404
 
+        # Check permissions
         user_role = g.current_user_role['name']
-        is_owner = str(website_to_delete['owner_id']) == str(g.current_user['_id'])
+        is_owner = str(website_to_delete.get('owner_id')) == str(g.current_user['_id'])
         
         if user_role == 'Editor' and not is_owner:
             return jsonify({"error": "Forbidden: You can only delete your own websites"}), 403

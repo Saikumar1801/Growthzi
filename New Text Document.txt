@@ -1,0 +1,210 @@
+Of course. Here is a comprehensive, step-by-step guide on how to run the entire project from scratch, assuming you have all the final code files we've created.
+
+This guide covers everything from setting up your environment to seeing the final website preview in your browser.
+
+Part 1: Prerequisites (Before You Begin)
+
+Make sure you have the following installed and ready:
+
+Python 3.8+: Download Python
+
+MongoDB: Download MongoDB Community Server. After installation, ensure the MongoDB service is running.
+
+Postman: Download Postman for testing the API.
+
+Git: Download Git for version control (recommended).
+
+A Google AI API Key: Get one from Google AI Studio.
+
+Part 2: Project Setup (One-Time Configuration)
+
+Follow these steps in your terminal or command prompt.
+
+Step 1: Get the Code
+If you haven't already, place all the project files into a single directory named growthzi-backend. Your final structure should look like this:
+
+Generated code
+growthzi-backend/
+├── growthzi/
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── auth.py
+│   │   ├── preview.py
+│   │   └── websites.py
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   └── decorators.py
+│   ├── __init__.py
+│   ├── config.py
+│   └── db.py
+├── static/
+│   ├── assets/
+│   │   ├── css/
+│   │   │   └── main.css
+│   │   └── js/
+│   │       └── main.js
+│   └── images/
+│       └── bg01.jpg, bg02.jpg, etc.
+├── templates/
+│   └── index.html
+├── .env
+├── .gitignore
+├── Growthzi-API.postman_collection.json
+├── README.md
+├── requirements.txt
+└── run.py
+
+
+Step 2: Create and Activate a Virtual Environment
+Navigate into your project directory and create an isolated environment for the Python packages.
+
+Generated bash
+cd growthzi-backend
+
+# Create the virtual environment
+python -m venv venv
+
+# Activate the environment
+# On Windows:
+.\venv\Scripts\activate
+
+# On macOS/Linux:
+source venv/bin/activate
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+You will see (venv) at the beginning of your command prompt line, indicating it's active.
+
+Step 3: Install Dependencies
+Install all the required Python libraries using the requirements.txt file.
+
+Generated bash
+pip install -r requirements.txt
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+Step 4: Configure Your Environment Variables
+This is a critical step. Open the .env file and ensure it has the correct values.
+
+Generated ini
+# Flask Configuration
+FLASK_APP=run.py
+FLASK_DEBUG=True
+
+# MongoDB Connection URI (this is the default for a local install)
+MONGO_URI="mongodb://localhost:27017/growthzi"
+
+# JWT Secret Key - CHANGE THIS to a long, random string for security
+JWT_SECRET_KEY="a-very-long-and-super-secret-random-string-12345!@#$%"
+
+# Google Gemini API Key
+GOOGLE_API_KEY="paste-your-actual-google-api-key-here"
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Ini
+IGNORE_WHEN_COPYING_END
+Part 3: Running the Application
+
+Step 5: Start the Backend Server
+Make sure your MongoDB service is running in the background. Then, start the Flask application.
+
+Generated bash
+python run.py
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+If successful, you will see output like this, and the server will be running:
+
+Generated code
+* Serving Flask app 'growthzi'
+ * Debug mode: on
+...
+Seeding database with default roles...
+Default roles seeded.
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: ...
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
+
+Your backend is now live and ready to receive API requests!
+
+Part 4: Testing the Full Workflow with Postman
+
+This is how you interact with the running application to see it in action.
+
+Step 6: Import the Postman Collection
+
+Open Postman.
+
+Click Import in the top-left.
+
+Upload the Growthzi-API.postman_collection.json file from your project directory.
+
+You will see a new collection named "Growthzi API" with three folders: Auth, Admin Management, and Website Management.
+
+Step 7: Create Your First Admin (Manual Step)
+The system has no public "Sign Up as Admin" feature, so you must promote your first user manually.
+
+In Postman, go to Auth > Sign Up. The body should already have an example user. Change the email to something like admin@growthzi.com and click Send. You will get a 201 Created response.
+
+Now, open a tool to view your MongoDB database (like MongoDB Compass or the mongosh command-line tool).
+
+Connect to your local database. Find the growthzi database.
+
+Open the roles collection. Find the document where name is "Admin" and copy its _id.
+
+Open the users collection. Find the admin@growthzi.com user you just created.
+
+Edit this user's document. Paste the Admin's _id into the role_id field and save the change.
+
+Step 8: The Full Test Flow
+
+Login as Admin:
+
+In Postman, go to Auth > Login. Use the admin@growthzi.com credentials and click Send.
+
+The response will contain a long JWT token. Copy this token value.
+
+In Postman, go to the "Environments" tab, click on "Growthzi API" (or create one), and paste the token into the CURRENT VALUE for the jwt_token variable.
+
+Generate a Website as Admin:
+
+Go to Website Management > Generate AI Website.
+
+The request will automatically use your jwt_token for authorization.
+
+Click Send. After a few seconds, you'll get a 201 Created response with the AI-generated JSON.
+
+From the response body, copy the _id of the website (e.g., 65d...).
+
+Preview Your Website:
+
+Open your web browser (Chrome, Firefox, etc.).
+
+In the address bar, type the preview URL and paste the website ID you just copied:
+http://127.0.0.1:5000/preview/your_copied_website_id_here
+
+Press Enter.
+
+You should now see a live, styled webpage with the headline, subheading, and services generated by the AI! This completes the full loop and confirms all parts of your application are working together correctly.
