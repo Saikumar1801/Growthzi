@@ -3,6 +3,98 @@
     padding: 2rem;
     border-radius: 8px;
     box-shadow: var(--card-shadow);
+    overflow-x: auto;
+}
+
+.admin-table-container p {
+    color: var(--secondary-text);
+    margin-top: 0;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+
+.user-table th,
+.user-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle; /* Align content vertically */
+}
+
+.user-table th {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.user-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- NEW STYLES --- */
+.action-cell {
+    min-width: 280px; /* Give more space for buttons */
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem; /* Space between buttons */
+    flex-wrap: wrap;
+}
+
+.btn.btn-success {
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.you-badge {
+    margin-left: 0.5rem;
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+/* --- END NEW STYLES --- */
+
+.role-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.role-badge.role-admin {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #f2828d;
+}
+
+.role-badge.role-editor {
+    background-color: rgba(61, 139, 253, 0.2);
+    color: #8cb8ff;
+}
+
+.role-badge.role-viewer {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #a8b2c0;
+}
+
+.action-text {
+    color: var(--secondary-text);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+.admin-table-container {
+    background-color: var(--background-light);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
     overflow-x: auto; /* For responsiveness on small screens */
 }
 
